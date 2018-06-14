@@ -45,3 +45,10 @@ class Item(Base):
   nombre = Column(String)
   url = Column(String)
   subtitulo_id = Column(Integer, ForeignKey('subtitulos.id'))
+
+class Permiso(Base):
+  __tablename__ = 'permisos'
+  id = Column(Integer, primary_key=True)
+  nombre = Column(String)
+  llave = Column(String)
+  sistema_id = Column(Integer, ForeignKey('sistemas.id'))
