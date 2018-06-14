@@ -52,3 +52,9 @@ class Permiso(Base):
   nombre = Column(String)
   llave = Column(String)
   sistema_id = Column(Integer, ForeignKey('sistemas.id'))
+
+class Rol(Base):
+  __tablename__ = 'roles'
+  id = Column(Integer, primary_key=True)
+  nombre = Column(String)
+  sistema_id = Column(Integer, ForeignKey('sistemas.id'))
