@@ -84,3 +84,35 @@ def guardar():
       ]
     }
   return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@rol_view.route('/permiso/listar/<sistema_id>/<rol_id>', method='GET')
+@enable_cors
+@headers
+def listar(sistema_id, rol_id):
+  rpta = None
+  status = 200
+  try:
+    conn = engine.connect()
+    stmt = ("""
+      SELECT T.id AS id, T.nombre AS nombre, (CASE WHEN (P.existe = 1) THEN 1 ELSE 0 END) AS existe, T.llave AS llave FROM
+      (
+        SELECT id, nombre, llave, 0 AS existe FROM permisos WHERE sistema_id = {0}
+      ) T
+      LEFT JOIN
+      (
+        SELECT P.id, P.nombre,  P.llave, 1 AS existe  FROM permisos P
+        INNER JOIN roles_permisos RP ON P.id = RP.permiso_id
+        WHERE RP.rol_id = {1}
+      ) P
+      ON T.id = P.id""").format(sistema_id, rol_id)
+    rpta = [dict(r) for r in conn.execute(stmt)]
+  except Exception as e:
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en listar los permisos del rol',
+        str(e)
+      ],
+    }
+    status = 500
+  return HTTPResponse(status = status, body = json.dumps(rpta))
