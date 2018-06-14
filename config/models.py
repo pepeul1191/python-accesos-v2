@@ -58,3 +58,9 @@ class Rol(Base):
   id = Column(Integer, primary_key=True)
   nombre = Column(String)
   sistema_id = Column(Integer, ForeignKey('sistemas.id'))
+
+class RolPermiso(Base):
+  __tablename__ = 'roles_permisos'
+  id = Column(Integer, primary_key=True)
+  rol_id = Column(Integer, ForeignKey('roles.id'))
+  permiso_id = Column(Integer, ForeignKey('permisos.id'))

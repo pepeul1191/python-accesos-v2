@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from bottle import Bottle, request, HTTPResponse
-from config.models import Rol
+from config.models import Rol, RolPermiso
 from sqlalchemy.sql import select
 from config.middleware import enable_cors, headers
 from config.database import engine, session_db
@@ -115,4 +115,52 @@ def listar(sistema_id, rol_id):
       ],
     }
     status = 500
+  return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@rol_view.route('/permiso/guardar', method='POST')
+@enable_cors
+@headers
+def guardar():
+  status = 200
+  data = json.loads(request.forms.get('data'))
+  editados = data['editados']
+  rol_id = data['extra']['rol_id']
+  array_nuevos = []
+  rpta = None
+  session = session_db()
+  try:
+    if len(editados) != 0:
+      for editado in editados:
+        permiso_id = editado['id']
+        existe = editado['existe']
+        e = session.query(RolPermiso).filter_by(permiso_id = permiso_id, rol_id = rol_id).first()
+        if existe == 0: #borrar si existe
+          if e != None:
+            session.query(RolPermiso).filter_by(permiso_id = permiso_id, rol_id = rol_id).delete()
+        elif existe == 1:#crear si no existe
+          if e == None:
+            s = RolPermiso(
+              permiso_id = permiso_id,
+              rol_id = rol_id,
+            )
+            session.add(s)
+            session.flush()
+    session.commit()
+    rpta = {
+      'tipo_mensaje' : 'success',
+      'mensaje' : [
+        'Se ha registrado la asociación de permisos al rol',
+        array_nuevos
+      ]
+    }
+  except Exception as e:
+    status = 500
+    session.rollback()
+    rpta = {
+      'tipo_mensaje' : 'error',
+      'mensaje' : [
+        'Se ha producido un error en asociar los permisos al rol',
+        str(e)
+      ]
+    }
   return HTTPResponse(status = status, body = json.dumps(rpta))
