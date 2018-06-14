@@ -17,3 +17,10 @@ class Estacion(Base):
   longitud = Column(Float)
   altura = Column(Float)
   tipo_estacion_id = Column(Integer, ForeignKey('tipo_estaciones.id'))
+
+class Sistema(Base):
+  __tablename__ = 'sistemas'
+  id = Column(Integer, primary_key=True)
+  nombre = Column(String)
+  version = Column(String)
+  repositorio = Column(String)
