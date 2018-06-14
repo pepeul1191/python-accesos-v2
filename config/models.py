@@ -38,3 +38,10 @@ class Subtitulo(Base):
   id = Column(Integer, primary_key=True)
   nombre = Column(String)
   modulo_id = Column(Integer, ForeignKey('modulos.id'))
+
+class Item(Base):
+  __tablename__ = 'items'
+  id = Column(Integer, primary_key=True)
+  nombre = Column(String)
+  url = Column(String)
+  subtitulo_id = Column(Integer, ForeignKey('subtitulos.id'))

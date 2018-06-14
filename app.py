@@ -7,6 +7,7 @@ from views.accesos import accesos_view
 from views.sistema import sistema_view
 from views.modulo import modulo_view
 from views.subtitulo import subtitulo_view
+from views.item import item_view
 
 app = Bottle()
 
@@ -35,5 +36,6 @@ if __name__ == '__main__':
   app.mount('/sistema', sistema_view)
   app.mount('/modulo', modulo_view)
   app.mount('/subtitulo', subtitulo_view)
+  app.mount('/item', item_view)
   app.run(host='localhost', port=3025, debug=True, reloader=True)
   #app.run(host='localhost', port=3025, debug=True)
