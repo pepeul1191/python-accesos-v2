@@ -24,3 +24,11 @@ class Sistema(Base):
   nombre = Column(String)
   version = Column(String)
   repositorio = Column(String)
+
+class Modulo(Base):
+  __tablename__ = 'modulos'
+  id = Column(Integer, primary_key=True)
+  nombre = Column(String)
+  icono = Column(String)
+  url = Column(String)
+  sistema_id = Column(Integer, ForeignKey('sistemas.id'))
