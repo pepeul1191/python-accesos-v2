@@ -3,8 +3,7 @@ from bottle import response
 
 def headers(fn):
   def _headers(*args, **kwargs):
-    response.headers['Server'] = 'Ubuntu'
-    response.headers['x-powered-by'] = 'Python'
+    response.headers['Server'] = 'Ubuntu;Python/3.5.2'
     return fn(*args, **kwargs)
   return _headers
 
