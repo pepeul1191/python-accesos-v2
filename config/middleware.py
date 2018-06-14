@@ -3,7 +3,7 @@ from bottle import response
 
 def headers(fn):
   def _headers(*args, **kwargs):
-    response.headers['Server'] = 'Ubuntu;Python/3.5.2'
+    response.headers['Server'] = 'Ubuntu;WSGIServer/0.2;CPython/3.5.2'
     return fn(*args, **kwargs)
   return _headers
 
