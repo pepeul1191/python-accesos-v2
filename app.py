@@ -13,11 +13,6 @@ from views.rol import rol_view
 
 app = Bottle()
 
-@hook('after_request')
-def enable_cors():
-  response.headers['Access-Control-Allow-Origin'] = '*'
-  response.headers['Server'] = 'Ubuntu;Python'
-
 @app.route('/')
 @headers
 def index():

@@ -10,7 +10,8 @@
     var MODULOS_JSON = JSON.parse('{{!locals['menu']}}');
     var ITEMS_JSON = JSON.parse('{{!locals['items']}}');
     var DATA = JSON.parse('{{!locals['data']}}');
-    var CSRF = '{{ locals['constants']['CSRF'] }}';
+    var CSRF = '{{locals['constants']['CSRF']['secret']}}';
+    var CSRF_KEY = '{{locals['constants']['CSRF']['key']}}';;
   </script>
 </head>
 <body>

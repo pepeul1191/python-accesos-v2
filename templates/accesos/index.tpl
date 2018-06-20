@@ -1,5 +1,5 @@
-% include('templates/partials/header_app.tpl')
+% include('templates/partials/app_header.tpl')
 <script id="yield" type="text/x-handlebars-template">
   hola
 </script>
-% include('templates/partials/footer_app.tpl')
+% include('templates/partials/app_footer.tpl')
