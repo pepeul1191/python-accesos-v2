@@ -14,7 +14,7 @@ def accesos_index_css():
     ],
     'produccion': ['dist/estacion.min'],
   }
-  return switcher.get(constants['ambiente'])
+  return switcher.get(constants['ambiente_static'])
 
 def accesos_index_js():
   switcher = {
@@ -59,4 +59,4 @@ def accesos_index_js():
     ],
     'produccion': ['dist/estacion.min'],
   }
-  return switcher.get(constants['ambiente'])
+  return switcher.get(constants['ambiente_static'])
