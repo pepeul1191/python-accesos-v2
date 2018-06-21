@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from config.constants import constants
 
 def accesos_index_css():

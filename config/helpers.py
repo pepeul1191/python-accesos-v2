@@ -1,5 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from config.constants import constants
-
 # views
 def load_css(csss):
   rpta = ''

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, Float
 from config.database import Base
