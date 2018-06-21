@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
-import bottle
 from beaker.middleware import SessionMiddleware
 from bottle import Bottle, request, template, HTTPResponse, redirect
 from config.middleware import headers, session_false
@@ -11,7 +10,7 @@ from config.session import session_opts
 from config.helpers import load_css, load_js
 from helpers.login_helper import login_index_css, login_index_js
 
-login_view = bottle.Bottle()
+login_view = Bottle()
 
 @login_view.route('/', method='GET')
 @headers
