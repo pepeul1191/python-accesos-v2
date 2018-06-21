@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from bottle import Bottle, request, HTTPResponse
-from config.models import Usuario, VWUsuarioCorreoEstado, UsuarioSistema
+from config.models import Usuario, VWUsuarioCorreoEstado, UsuarioSistema, UsuarioRol, UsuarioPermiso
 from sqlalchemy.sql import select
 from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
@@ -349,6 +349,54 @@ def rol(sistema_id, usuario_id):
     status = 500
   rpta = json.dumps(rpta)
   return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/rol/guardar', method='POST')
+@enable_cors
+@headers
+def guardar():
+  status = 200
+  data = json.loads(request.forms.get('data'))
+  editados = data['editados']
+  usuario_id = data['extra']['usuario_id']
+  array_nuevos = []
+  rpta = None
+  session = session_db()
+  try:
+    if len(editados) != 0:
+      for editado in editados:
+        rol_id = editado['id']
+        existe = editado['existe']
+        e = session.query(UsuarioRol).filter_by(rol_id = rol_id, usuario_id = usuario_id).first()
+        if existe == 0: #borrar si existe
+          if e != None:
+            session.query(UsuarioRol).filter_by(rol_id = rol_id, usuario_id = usuario_id).delete()
+        elif existe == 1:#crear si no existe
+          if e == None:
+            s = UsuarioRol(
+              rol_id = rol_id,
+              usuario_id = usuario_id,
+            )
+            session.add(s)
+            session.flush()
+    session.commit()
+    rpta = {
+      'tipo_mensaje' : 'success',
+      'mensaje' : [
+        'Se ha registrado la asociación de roles al usuario',
+        array_nuevos
+      ]
+    }
+  except Exception as e:
+    status = 500
+    session.rollback()
+    rpta = {
+      'tipo_mensaje' : 'error',
+      'mensaje' : [
+        'Se ha producido un error en asociar los roles al usuario',
+        str(e)
+      ]
+    }
+  return HTTPResponse(status = status, body = json.dumps(rpta))
 
 @usuario_view.route('/permiso/<sistema_id>/<usuario_id>', method='GET')
 @enable_cors
