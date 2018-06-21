@@ -4,7 +4,7 @@ import json
 from bottle import Bottle, request, HTTPResponse
 from config.models import Sistema
 from sqlalchemy.sql import select
-from config.middleware import enable_cors, headers
+from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
 from config.constants import constants
 
@@ -13,6 +13,7 @@ sistema_view = Bottle()
 @sistema_view.route('/listar', method='GET')
 @enable_cors
 @headers
+@check_csrf
 def listar():
   rpta = None
   status = 200
