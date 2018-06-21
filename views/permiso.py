@@ -4,7 +4,7 @@ import json
 from bottle import Bottle, request, HTTPResponse
 from config.models import Permiso
 from sqlalchemy.sql import select
-from config.middleware import enable_cors, headers
+from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
 from config.constants import constants
 
@@ -13,6 +13,7 @@ permiso_view = Bottle()
 @permiso_view.route('/listar/<sistema_id>', method='GET')
 @enable_cors
 @headers
+@check_csrf
 def listar(sistema_id):
   rpta = None
   status = 200
@@ -35,6 +36,7 @@ def listar(sistema_id):
 @permiso_view.route('/guardar', method='POST')
 @enable_cors
 @headers
+@check_csrf
 def guardar():
   status = 200
   data = json.loads(request.forms.get('data'))

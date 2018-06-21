@@ -4,7 +4,7 @@ import json
 from bottle import Bottle, request, template
 from config.models import Estacion
 from sqlalchemy.sql import select
-from config.middleware import enable_cors, headers
+from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
 from config.constants import constants
 from config.helpers import load_css, load_js, estacion_index_css, estacion_index_js
@@ -13,6 +13,7 @@ estacion_view = Bottle()
 
 @estacion_view.route('/', method='GET')
 @headers
+@check_csrf
 def listar():
   helpers = {}
   helpers['css'] = load_css(estacion_index_css())
@@ -24,6 +25,7 @@ def listar():
 @estacion_view.route('/listar', method='GET')
 @enable_cors
 @headers
+@check_csrf
 def listar():
   conn = engine.connect()
   stmt = select([Estacion])

@@ -36,6 +36,7 @@ def listar():
 @sistema_view.route('/guardar', method='POST')
 @enable_cors
 @headers
+@check_csrf
 def guardar():
   status = 200
   data = json.loads(request.forms.get('data'))
