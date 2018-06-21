@@ -25,54 +25,61 @@ def enable_cors(fn):
 def check_csrf(fn):
   def _check_csrf(*args, **kwargs):
     #si csrf en el header NO coincide
-    continuar = True
-    mensaje = []
-    if request.get_header(constants['CSRF']['key']) != None:
-      if request.get_header(constants['CSRF']['key']) != constants['CSRF']['secret']:
+    if constants['ambiente_csrf'] == 'activo':
+      continuar = True
+      mensaje = []
+      if request.get_header(constants['CSRF']['key']) != None:
+        if request.get_header(constants['CSRF']['key']) != constants['CSRF']['secret']:
+          continuar = False
+          mensaje = [
+            'No se puede acceder al recurso',
+            'CSRF Token key error'
+          ]
+      else:
         continuar = False
         mensaje = [
           'No se puede acceder al recurso',
-          'CSRF Token key error'
+          'CSRF Token error'
         ]
+      if continuar == True:
+        return fn(*args, **kwargs)
+      else:
+        rpta = {
+          'tipo_mensaje' : 'error',
+          'mensaje' : mensaje
+        }
+        return HTTPResponse(status = 500, body = json.dumps(rpta))
     else:
-      continuar = False
-      mensaje = [
-        'No se puede acceder al recurso',
-        'CSRF Token error'
-      ]
-    if continuar == True:
       return fn(*args, **kwargs)
-    else:
-      rpta = {
-        'tipo_mensaje' : 'error',
-        'mensaje' : mensaje
-      }
-      return HTTPResponse(status = 500, body = json.dumps(rpta))
   return _check_csrf
 
 def session_false(fn):
   def _session_false(*args, **kwargs):
     #si la session es activaa, vamos a '/accesos/'
-    s = request.environ.get('beaker.session')
-    if s != None:
-      if s.has_key('activo') == True:
-        if s['activo'] == True:
-          return redirect("/accesos/")
+    if constants['ambiente_session'] == 'activo':
+      s = request.environ.get('beaker.session')
+      if s != None:
+        if s.has_key('activo') == True:
+          if s['activo'] == True:
+            return redirect("/accesos/")
+      return fn(*args, **kwargs)
     #else: contnuar
-    return fn(*args, **kwargs)
+    else:
+      return fn(*args, **kwargs)
   return _session_false
 
 def session_true(fn):
   def _session_true(*args, **kwargs):
     #si la session es activaa, vamos a '/accesos/'
-    s = request.environ.get('beaker.session')
-    if s != None:
-      if s.has_key('activo') == True:
-        if s['activo'] == False:
+    if constants['ambiente_session'] == 'activo':
+      s = request.environ.get('beaker.session')
+      if s != None:
+        if s.has_key('activo') == True:
+          if s['activo'] == False:
+            return redirect("/error/access/505")
+        else:
           return redirect("/error/access/505")
       else:
         return redirect("/error/access/505")
-    else:
-      return redirect("/error/access/505")
     return fn(*args, **kwargs)
   return _session_true
