@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from bottle import Bottle, request, HTTPResponse
-from config.models import Usuario, VWUsuarioCorreoEstado
+from config.models import Usuario, VWUsuarioCorreoEstado, UsuarioSistema
 from sqlalchemy.sql import select
 from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
@@ -264,3 +264,51 @@ def sistema(usuario_id):
     status = 500
   rpta = json.dumps(rpta)
   return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/sistema/guardar', method='POST')
+@enable_cors
+@headers
+def guardar():
+  status = 200
+  data = json.loads(request.forms.get('data'))
+  editados = data['editados']
+  usuario_id = data['extra']['usuario_id']
+  array_nuevos = []
+  rpta = None
+  session = session_db()
+  try:
+    if len(editados) != 0:
+      for editado in editados:
+        sistema_id = editado['id']
+        existe = editado['existe']
+        e = session.query(UsuarioSistema).filter_by(sistema_id = sistema_id, usuario_id = usuario_id).first()
+        if existe == 0: #borrar si existe
+          if e != None:
+            session.query(UsuarioSistema).filter_by(sistema_id = sistema_id, usuario_id = usuario_id).delete()
+        elif existe == 1:#crear si no existe
+          if e == None:
+            s = UsuarioSistema(
+              sistema_id = sistema_id,
+              usuario_id = usuario_id,
+            )
+            session.add(s)
+            session.flush()
+    session.commit()
+    rpta = {
+      'tipo_mensaje' : 'success',
+      'mensaje' : [
+        'Se ha registrado la asociación de sistemas al usuario',
+        array_nuevos
+      ]
+    }
+  except Exception as e:
+    status = 500
+    session.rollback()
+    rpta = {
+      'tipo_mensaje' : 'error',
+      'mensaje' : [
+        'Se ha producido un error en asociar los sistemas al usuario',
+        str(e)
+      ]
+    }
+  return HTTPResponse(status = status, body = json.dumps(rpta))
