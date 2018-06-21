@@ -69,7 +69,6 @@ def nombre_repetido():
     usuario_id = data['id']
     nombre_usuario = data['usuario']
     conn = engine.connect()
-    #SELECT COUNT"(*) AS cantidad FROM usuarios WHERE usuario = ?
     if usuario_id == 'E':
       #SELECT COUNT"(*) AS cantidad FROM usuarios WHERE usuario = ?
       n = session_db().query(Usuario).filter_by(usuario = nombre_usuario).count()
@@ -88,6 +87,43 @@ def nombre_repetido():
       'tipo_mensaje': 'error',
       'mensaje': [
         'Se ha producido un error en validar si el nombre es repetido',
+        str(e)
+      ],
+    }
+    status = 500
+    rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/correo_repetido', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def correo_repetido():
+  rpta = None
+  status = 200
+  try:
+    data = json.loads(request.forms.get('data'))
+    usuario_id = data['id']
+    correo = data['correo']
+    conn = engine.connect()
+    if usuario_id == 'E':
+      #SELECT COUNT(*) AS cantidad FROM usuarios WHERE correo = ?
+      n = session_db().query(Usuario).filter_by(correo = correo).count()
+      rpta = str(n)
+    else:
+      #SELECT COUNT(*) AS cantidad FROM usuarios WHERE correo = ? AND id = ?
+      n = session_db().query(Usuario).filter_by(correo = correo, id = usuario_id).count()
+      if n == 1:
+        rpta = '0'
+      else:
+        #SELECT COUNT(*) AS cantidad FROM usuarios WHERE correo = ?
+        n = session_db().query(Usuario).filter_by(correo = correo).count()
+        rpta = str(n)
+  except Exception as e:
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en validar si el correo es repetido',
         str(e)
       ],
     }
