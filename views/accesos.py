@@ -4,7 +4,7 @@ import json
 from bottle import Bottle, request, template
 from config.models import Estacion
 from sqlalchemy.sql import select
-from config.middleware import enable_cors, headers
+from config.middleware import session_true, headers
 from config.database import engine, session_db
 from config.constants import constants
 from config.helpers import load_css, load_js
@@ -14,7 +14,8 @@ accesos_view = Bottle()
 
 @accesos_view.route('/', method='GET')
 @headers
-def listar():
+@session_true
+def index():
   helpers = {}
   helpers['css'] = load_css(accesos_index_css())
   helpers['js'] = load_js(accesos_index_js())

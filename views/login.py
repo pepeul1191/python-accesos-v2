@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
+import bottle
 from beaker.middleware import SessionMiddleware
 from bottle import Bottle, request, template, HTTPResponse, redirect
-from config.middleware import enable_cors, headers
+from config.middleware import headers, session_false
 from config.database import engine, session_db
 from config.constants import constants
 from config.session import session_opts
 from config.helpers import load_css, load_js
 from helpers.login_helper import login_index_css, login_index_js
 
-login_view = Bottle()
-SessionMiddleware(login_view, session_opts)
+login_view = bottle.Bottle()
 
 @login_view.route('/', method='GET')
 @headers
+@session_false
 def index():
   helpers = {}
   helpers['css'] = load_css(login_index_css())
@@ -53,11 +54,7 @@ def acceder():
   if continuar == True:
     s = request.environ.get('beaker.session')
     s['activo'] = True
-    print("1 ++++++++++++++++++++++++++++++++")
-    print(s)
-    print("2 ++++++++++++++++++++++++++++++++")
-    print(s['activo'])
-    print("3 ++++++++++++++++++++++++++++++++")
+    s.save()
     return redirect("/accesos/")
   else:
     helpers = {}
@@ -73,3 +70,9 @@ def acceder():
     }
     boby_template = template('templates/login/index', locals = locals, helpers = helpers)
     return HTTPResponse(status = 500, body = boby_template)
+
+@login_view.route('/cerrar', method='GET')
+def cerrar():
+  s = request.environ.get('beaker.session')
+  s.delete()
+  return redirect("/login")
