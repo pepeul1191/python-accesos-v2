@@ -153,3 +153,42 @@ def contrasenia_repetida():
     status = 500
     rpta = json.dumps(rpta)
   return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/guardar_usuario_correo', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def guardar_usuario_correo():
+  rpta = None
+  status = 200
+  try:
+    data = json.loads(request.forms.get('usuario'))
+    usuario_id = data['id']
+    correo = data['correo']
+    nombre_usuario = data['usuario']
+    estado_usuario_id = data['estado_usuario_id']
+    session = session_db()
+    session.query(Usuario).filter_by(id = usuario_id).update({
+      'usuario': nombre_usuario,
+      'correo': correo,
+      'estado_usuario_id': estado_usuario_id
+    })
+    session.commit()
+    rpta = {
+      'tipo_mensaje' : 'success',
+      'mensaje' : [
+        'Se ha registrado los cambios en los datos generales del usuario',
+      ]
+    }
+  except Exception as e:
+    print(e)
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en validar si la contraseña del usuario',
+         str(e)
+       ],
+     }
+    status = 500
+  rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)

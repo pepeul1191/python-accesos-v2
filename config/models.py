@@ -60,7 +60,7 @@ class Usuario(Base):
   id = Column(Integer, primary_key=True)
   usuario = Column(String)
   contrasenia = Column(String)
-  correo = Column(Float)
+  correo = Column(String)
   estado_usuario_id = Column(Integer, ForeignKey('estado_usuarios.id'))
 
 class Acceso(Base):
