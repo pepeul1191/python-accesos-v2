@@ -17,6 +17,7 @@ from views.item import item_view
 from views.permiso import permiso_view
 from views.rol import rol_view
 from views.login import login_view
+from views.error import error_view
 from helpers.error_helper import error_access_css, error_access_js
 
 main_app = bottle.app()
@@ -36,13 +37,14 @@ def test_conexion():
   return redirect("/accesos/")
 
 @error(404)
+@headers
 def error404(error):
   helpers = {}
   helpers['css'] = load_css(error_access_css())
   helpers['js'] = load_js(error_access_js())
   locals = {
     'constants': constants,
-    'title': 'Bienvenido',
+    'title': 'Error',
     'mensaje': 'Archivo no encontrado',
     'numero': '404',
     'descripcion': 'La página que busca no se encuentra en el servidor',
@@ -51,6 +53,7 @@ def error404(error):
   return HTTPResponse(status = 404, body = boby_template)
 
 @error(405)
+@headers
 def error405(error):
   rpta = {
     'tipo_mensaje' : 'error',
@@ -71,6 +74,8 @@ if __name__ == '__main__':
   main_app.mount('/login', login_view)
   # accesos
   main_app.mount('/accesos/', accesos_view)
+  # errores
+  main_app.mount('/error', error_view)
   # servicios REST
   main_app.mount('/estacion', estacion_view)
   main_app.mount('/sistema', sistema_view)
