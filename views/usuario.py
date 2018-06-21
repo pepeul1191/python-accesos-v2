@@ -68,7 +68,6 @@ def nombre_repetido():
     data = json.loads(request.forms.get('data'))
     usuario_id = data['id']
     nombre_usuario = data['usuario']
-    conn = engine.connect()
     if usuario_id == 'E':
       #SELECT COUNT"(*) AS cantidad FROM usuarios WHERE usuario = ?
       n = session_db().query(Usuario).filter_by(usuario = nombre_usuario).count()
@@ -105,7 +104,6 @@ def correo_repetido():
     data = json.loads(request.forms.get('data'))
     usuario_id = data['id']
     correo = data['correo']
-    conn = engine.connect()
     if usuario_id == 'E':
       #SELECT COUNT(*) AS cantidad FROM usuarios WHERE correo = ?
       n = session_db().query(Usuario).filter_by(correo = correo).count()
@@ -127,6 +125,31 @@ def correo_repetido():
         str(e)
       ],
     }
+    status = 500
+    rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/contrasenia_repetida', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def contrasenia_repetida():
+  rpta = None
+  status = 200
+  try:
+    data = json.loads(request.forms.get('data'))
+    usuario_id = data['id']
+    contrasenia = data['contrasenia']
+    n = session_db().query(Usuario).filter_by(contrasenia = contrasenia, id = usuario_id).count()
+    rpta = str(n)
+  except Exception as e:
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en validar si la contraseña del usuario',
+         str(e)
+       ],
+     }
     status = 500
     rpta = json.dumps(rpta)
   return HTTPResponse(status = status, body = rpta)
