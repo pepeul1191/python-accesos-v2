@@ -312,3 +312,77 @@ def guardar():
       ]
     }
   return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@usuario_view.route('/rol/<sistema_id>/<usuario_id>', method='GET')
+@enable_cors
+@headers
+@check_csrf
+def rol(sistema_id, usuario_id):
+  rpta = None
+  status = 200
+  try:
+    session = session_db()
+    rs = session.execute('''
+      SELECT T.id AS id, T.nombre AS nombre, (CASE WHEN (P.existe = 1) THEN 1 ELSE 0 END) AS existe FROM
+	  (
+		SELECT id, nombre, 0 AS existe FROM roles WHERE sistema_id = :sistema_id
+	  ) T
+	  LEFT JOIN
+	  (
+		SELECT R.id, R.nombre, 1 AS existe  FROM roles R
+		INNER JOIN usuarios_roles UR ON R.id = UR.rol_id
+		WHERE UR.usuario_id = :usuario_id
+	  ) P
+	  ON T.id = P.id'''
+      , {'usuario_id': usuario_id, 'sistema_id': sistema_id})
+    rpta = [dict(r) for r in rs]
+    session.commit()
+  except Exception as e:
+    print(e)
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error error en listar los roles del usuario',
+         str(e)
+       ],
+     }
+    status = 500
+  rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/permiso/<sistema_id>/<usuario_id>', method='GET')
+@enable_cors
+@headers
+@check_csrf
+def permiso(sistema_id, usuario_id):
+  rpta = None
+  status = 200
+  try:
+    session = session_db()
+    rs = session.execute('''
+      SELECT T.id AS id, T.nombre AS nombre, (CASE WHEN (P.existe = 1) THEN 1 ELSE 0 END) AS existe, T.llave AS llave FROM
+	  (
+		SELECT id, nombre, llave, 0 AS existe FROM permisos WHERE sistema_id = :sistema_id
+	  ) T
+	  LEFT JOIN
+	  (
+		SELECT P.id, P.nombre,  P.llave, 1 AS existe  FROM permisos P
+		INNER JOIN usuarios_permisos UP ON P.id = UP.permiso_id
+		WHERE UP.usuario_id = :usuario_id
+	  ) P
+	ON T.id = P.id'''
+      , {'usuario_id': usuario_id, 'sistema_id': sistema_id})
+    rpta = [dict(r) for r in rs]
+    session.commit()
+  except Exception as e:
+    print(e)
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error error en listar los permisos del usuario',
+         str(e)
+       ],
+     }
+    status = 500
+  rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
