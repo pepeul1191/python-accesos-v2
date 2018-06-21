@@ -13,5 +13,5 @@ constants = {
   },
   'ambiente_static' : 'desarrollo',
   'ambiente_csrf' : 'activo',
-  'ambiente_session' : 'activo',
+  'ambiente_session' : 'inactivo',
 }
