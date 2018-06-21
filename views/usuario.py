@@ -227,3 +227,40 @@ def guardar_contrasenia():
     status = 500
   rpta = json.dumps(rpta)
   return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/sistema/<usuario_id>', method='GET')
+@enable_cors
+@headers
+@check_csrf
+def sistema(usuario_id):
+  rpta = None
+  status = 200
+  try:
+    session = session_db()
+    rs = session.execute('''
+      SELECT T.id AS id, T.nombre AS nombre, (CASE WHEN (P.existe = 1) THEN 1 ELSE 0 END) AS existe FROM
+      (
+        SELECT id, nombre, 0 AS existe FROM sistemas
+      ) T
+      LEFT JOIN
+      (
+        SELECT S.id, S.nombre, 1 AS existe FROM sistemas S
+        INNER JOIN usuarios_sistemas US ON US.sistema_id = S.id
+        WHERE US.usuario_id = :usuario_id
+      ) P
+      ON T.id = P.id'''
+      , {'usuario_id': usuario_id})
+    rpta = [dict(r) for r in rs]
+    session.commit()
+  except Exception as e:
+    print(e)
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en  listar los sistema del usuario',
+         str(e)
+       ],
+     }
+    status = 500
+  rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
