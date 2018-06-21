@@ -56,3 +56,41 @@ def listar(usuario_id):
     }
     status = 500
   return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@usuario_view.route('/nombre_repetido', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def nombre_repetido():
+  rpta = None
+  status = 200
+  try:
+    data = json.loads(request.forms.get('data'))
+    usuario_id = data['id']
+    nombre_usuario = data['usuario']
+    conn = engine.connect()
+    #SELECT COUNT"(*) AS cantidad FROM usuarios WHERE usuario = ?
+    if usuario_id == 'E':
+      #SELECT COUNT"(*) AS cantidad FROM usuarios WHERE usuario = ?
+      n = session_db().query(Usuario).filter_by(usuario = nombre_usuario).count()
+      rpta = str(n)
+    else:
+      #SELECT COUNT(*) AS cantidad FROM usuarios WHERE usuario = ? AND id = ?
+      n = session_db().query(Usuario).filter_by(usuario = nombre_usuario, id = usuario_id).count()
+      if n == 1:
+        rpta = '0'
+      else:
+        #SELECT COUNT(*) AS cantidad FROM usuarios WHERE usuario = ?
+        n = session_db().query(Usuario).filter_by(usuario = nombre_usuario).count()
+        rpta = str(n)
+  except Exception as e:
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en validar si el nombre es repetido',
+        str(e)
+      ],
+    }
+    status = 500
+    rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
