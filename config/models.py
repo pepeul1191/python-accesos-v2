@@ -3,22 +3,6 @@
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, Float
 from config.database import Base
 # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html
-
-class TipoEstacion(Base):
-  __tablename__ = 'tipo_estaciones'
-  id = Column(Integer, primary_key=True)
-  nombre = Column(String)
-
-class Estacion(Base):
-  __tablename__ = 'estaciones'
-  id = Column(Integer, primary_key=True)
-  nombre = Column(String)
-  descripcion = Column(String)
-  latitud = Column(Float)
-  longitud = Column(Float)
-  altura = Column(Float)
-  tipo_estacion_id = Column(Integer, ForeignKey('tipo_estaciones.id'))
-
 class Sistema(Base):
   __tablename__ = 'sistemas'
   id = Column(Integer, primary_key=True)
@@ -65,3 +49,34 @@ class RolPermiso(Base):
   id = Column(Integer, primary_key=True)
   rol_id = Column(Integer, ForeignKey('roles.id'))
   permiso_id = Column(Integer, ForeignKey('permisos.id'))
+
+class EstadoUsuario(Base):
+  __tablename__ = 'estado_usuarios'
+  id = Column(Integer, primary_key=True)
+  nombre = Column(String)
+
+class Usuario(Base):
+  __tablename__ = 'usuarios'
+  id = Column(Integer, primary_key=True)
+  usuario = Column(String)
+  contrasenia = Column(String)
+  correo = Column(Float)
+  estado_usuario_id = Column(Integer, ForeignKey('estado_usuarios.id'))
+
+class UsuarioPermiso(Base):
+  __tablename__ = 'usuarios_permisos'
+  id = Column(Integer, primary_key=True)
+  usuario_id = Column(Integer, ForeignKey('usuarios.id'))
+  permiso_id = Column(Integer, ForeignKey('permisos.id'))
+
+class UsuarioRol(Base):
+  __tablename__ = 'usuarios_roles'
+  id = Column(Integer, primary_key=True)
+  usuario_id = Column(Integer, ForeignKey('usuarios.id'))
+  rol_id = Column(Integer, ForeignKey('roles.id'))
+
+class UsuarioSistema(Base):
+  __tablename__ = 'usuarios_sistemas'
+  id = Column(Integer, primary_key=True)
+  usuario_id = Column(Integer, ForeignKey('usuarios.id'))
+  sistema_id = Column(Integer, ForeignKey('sistemas.id'))

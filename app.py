@@ -8,7 +8,6 @@ from config.middleware import headers
 from config.helpers import load_css, load_js
 from config.session import session_opts
 from config.constants import constants
-from views.estacion import estacion_view
 from views.accesos import accesos_view
 from views.sistema import sistema_view
 from views.modulo import modulo_view
@@ -77,7 +76,6 @@ if __name__ == '__main__':
   # errores
   main_app.mount('/error', error_view)
   # servicios REST
-  main_app.mount('/estacion', estacion_view)
   main_app.mount('/sistema', sistema_view)
   main_app.mount('/modulo', modulo_view)
   main_app.mount('/subtitulo', subtitulo_view)
