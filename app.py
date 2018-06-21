@@ -45,5 +45,5 @@ if __name__ == '__main__':
   app.mount('/item', item_view)
   app.mount('/permiso', permiso_view)
   app.mount('/rol', rol_view)
-  app.run(host='localhost', port=3025, debug=True, reloader=True)
-  #app.run(host='localhost', port=3025, debug=True)
+  #app.run(host='localhost', port=3025, debug=True, reloader=True)
+  app.run(host='localhost', port=3025, debug=True)

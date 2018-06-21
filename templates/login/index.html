@@ -1,1 +1,24 @@
-login
+% include('templates/partials/blank_header.tpl')
+<div class="login-page">
+  <div class="form">
+    <i class="fa fa-universal-access" aria-hidden="true" id="logo-brand"></i>
+    <form class="login-form" action="{{locals['constants']['BASE_URL']}}login/acceder" method="post">
+      <input type="text" name="usuario" placeholder="usuario"/>
+      <input type="password" name="contrasenia" placeholder="contrasenia"/>
+      <input type="hidden" name="{{locals['constants']['CSRF']['key']}}" value="{{locals['constants']['CSRF']['secret']}}"/>
+      <button>login</button>
+      <p class="mensaje-error">{{locals['mensaje']}}</p>
+      <p class="message">No está registrado? <a href="#" onclick="crearCuenta()">Crear cuenta</a></p>
+    </form>
+  </div>
+</div>
+<footer>
+<p>Powered by: <a href="http://softweb.pe/">Software Web Perú</a> © 2011-2018 </p>
+</footer>
+
+<script type="text/javascript">
+  function crearCuenta() {
+    alert("Operación no disponible");
+  }
+</script>
+% include('templates/partials/blank_footer.tpl')
