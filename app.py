@@ -15,6 +15,8 @@ from views.subtitulo import subtitulo_view
 from views.item import item_view
 from views.permiso import permiso_view
 from views.rol import rol_view
+from views.estado_usuario import estado_usuario_view
+from views.usuario import usuario_view
 from views.login import login_view
 from views.error import error_view
 from helpers.error_helper import error_access_css, error_access_js
@@ -82,5 +84,7 @@ if __name__ == '__main__':
   main_app.mount('/item', item_view)
   main_app.mount('/permiso', permiso_view)
   main_app.mount('/rol', rol_view)
+  main_app.mount('/usuario', usuario_view)
+  main_app.mount('/estado_usuario', estado_usuario_view)
   #bottle.run(app = app, host='localhost', port=3025, debug=True, reloader=True)
   bottle.run(app = app, host='localhost', port=3025, debug=True)

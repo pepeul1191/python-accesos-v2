@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Float
+from sqlalchemy import Table, Column, Integer, String, ForeignKey, Float, DateTime
 from config.database import Base
 # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html
 class Sistema(Base):
@@ -63,6 +63,12 @@ class Usuario(Base):
   correo = Column(Float)
   estado_usuario_id = Column(Integer, ForeignKey('estado_usuarios.id'))
 
+class Acceso(Base):
+  __tablename__ = 'accesos'
+  id = Column(Integer, primary_key=True)
+  momento = Column(DateTime)
+  usuario_id = Column(Integer, ForeignKey('usuarios.id'))
+
 class UsuarioPermiso(Base):
   __tablename__ = 'usuarios_permisos'
   id = Column(Integer, primary_key=True)
@@ -80,3 +86,11 @@ class UsuarioSistema(Base):
   id = Column(Integer, primary_key=True)
   usuario_id = Column(Integer, ForeignKey('usuarios.id'))
   sistema_id = Column(Integer, ForeignKey('sistemas.id'))
+
+class VWUsuarioCorreoEstado(Base):
+  __tablename__ = 'vw_usuario_correo_estado'
+  id = Column(Integer, primary_key=True)
+  usuario = Column(String)
+  correo = Column(String)
+  estado_usuario_id = Column(Integer)
+  estado_usuario_nombre = Column(String)
