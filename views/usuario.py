@@ -192,3 +192,38 @@ def guardar_usuario_correo():
     status = 500
   rpta = json.dumps(rpta)
   return HTTPResponse(status = status, body = rpta)
+
+@usuario_view.route('/guardar_contrasenia', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def guardar_contrasenia():
+  rpta = None
+  status = 200
+  try:
+    data = json.loads(request.forms.get('contrasenia'))
+    usuario_id = data['id']
+    contrasenia = data['contrasenia']
+    session = session_db()
+    session.query(Usuario).filter_by(id = usuario_id).update({
+      'contrasenia': contrasenia,
+    })
+    session.commit()
+    rpta = {
+      'tipo_mensaje' : 'success',
+      'mensaje' : [
+        'Se ha el cambio de contraseña del usuario',
+      ]
+    }
+  except Exception as e:
+    print(e)
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en actualizar la contraseña del usaurio',
+         str(e)
+       ],
+     }
+    status = 500
+  rpta = json.dumps(rpta)
+  return HTTPResponse(status = status, body = rpta)
