@@ -1,6 +1,5 @@
--- migrate:down
---TRUNCATE TABLE items;
 -- migrate:up
+
 INSERT INTO items (nombre, url, subtitulo_id) VALUES (
   'Gestión de Sistemas',
   '#/sistema',
@@ -11,3 +10,5 @@ INSERT INTO items (nombre, url, subtitulo_id) VALUES (
   '#/usuario',
   1
 );
+
+-- migrate:down
