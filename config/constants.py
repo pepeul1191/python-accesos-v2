@@ -12,6 +12,6 @@ constants = {
     'contrasenia' : 'sistema123'
   },
   'ambiente_static' : 'desarrollo',
-  'ambiente_csrf' : 'activo',
+  'ambiente_csrf' : 'inactivo',
   'ambiente_session' : 'inactivo',
 }
