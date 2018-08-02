@@ -16,6 +16,11 @@ Migraciones con DBMATE:
     $ dbmate -d "db/migrations" -e "DATABASE_URL" new <<nombre_de_migracion>>
     $ dbmate -d "db/migrations" up
 
+### Archivos a cambiar para el pase a producción
+
++ app.py
++ config/constants.py
+
 ### Fuentes:
 
 + https://bottlepy.org/docs/dev/
