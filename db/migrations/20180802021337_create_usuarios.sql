@@ -1,6 +1,5 @@
--- migrate:down
-DROP TABLE IF EXISTS usuarios;
 -- migrate:up
+
 CREATE TABLE usuarios(
 	id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   usuario VARCHAR(20) NOT NULL,
@@ -9,3 +8,7 @@ CREATE TABLE usuarios(
   estado_usuario_id INTEGER,
   FOREIGN KEY (estado_usuario_id) REFERENCES estado_usuarios(id) ON DELETE CASCADE
 )
+
+-- migrate:down
+
+DROP TABLE IF EXISTS usuarios;
