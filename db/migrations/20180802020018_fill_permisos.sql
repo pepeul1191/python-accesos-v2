@@ -1,6 +1,5 @@
--- migrate:down
---TRUNCATE TABLE permisos;
 -- migrate:up
+
 INSERT INTO permisos (nombre, llave, sistema_id) VALUES (
   'Listar Sistemas',
   'sistema_listar',
@@ -11,3 +10,5 @@ INSERT INTO permisos (nombre, llave, sistema_id) VALUES (
   'sistema_modulo_listar',
   1
 );
+
+-- migrate:down
