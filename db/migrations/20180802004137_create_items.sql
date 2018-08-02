@@ -1,6 +1,5 @@
--- migrate:down
-DROP TABLE IF EXISTS items;
 -- migrate:up
+
 CREATE TABLE items(
 	id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	nombre	VARCHAR(30) NOT NULL,
@@ -8,3 +7,7 @@ CREATE TABLE items(
   subtitulo_id INTEGER,
   FOREIGN KEY (subtitulo_id) REFERENCES subtitulos(id) ON DELETE CASCADE
 )
+
+-- migrate:down
+
+DROP TABLE IF EXISTS items;
