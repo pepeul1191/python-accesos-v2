@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from bottle import Bottle, request, HTTPResponse
-from config.models import Modulo
+from config.models import Modulo, VWSistemaModulo
 from sqlalchemy.sql import select
 from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
@@ -89,4 +89,30 @@ def guardar():
         str(e)
       ]
     }
+  return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@modulo_view.route('/menu/<sistema_id>', method='GET')
+@enable_cors
+@headers
+@check_csrf
+def menu(sistema_id):
+  rpta = None
+  status = 200
+  try:
+    conn = engine.connect()
+    stmt = select([VWSistemaModulo]).where(VWSistemaModulo.sistema_id == sistema_id)
+    rs = conn.execute(stmt)
+    rpta = []
+    for r in rs:
+      t = {'url': r.url, 'nombre': r.nombre_modulo}
+      rpta.append(t)
+  except Exception as e:
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en listar los modulos del sistema',
+        str(e)
+      ],
+    }
+    status = 500
   return HTTPResponse(status = status, body = json.dumps(rpta))

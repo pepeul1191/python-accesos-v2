@@ -94,3 +94,11 @@ class VWUsuarioCorreoEstado(Base):
   correo = Column(String)
   estado_usuario_id = Column(Integer)
   estado_usuario_nombre = Column(String)
+
+class VWSistemaModulo(Base):
+  __tablename__ = 'vw_sistemas_modulos'
+  sistema_id = Column(Integer, primary_key=True)
+  nombre_sistema = Column(String)
+  modulo_id = Column(Integer, primary_key=True)
+  nombre_modulo = Column(String)
+  url = Column(String)
