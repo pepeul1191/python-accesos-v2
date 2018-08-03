@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from bottle import Bottle, request, HTTPResponse
-from config.models import Sistema
+from config.models import Sistema, VWUsuarioSistema
 from sqlalchemy.sql import select
 from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
@@ -89,3 +89,29 @@ def guardar():
       ]
     }
   return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@sistema_view.route('/usuario/validar', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def externo_validar():
+  status = 200
+  usuario = request.forms.get('usuario')
+  sistema_id = request.forms.get('sistema_id')
+  rpta = None
+  session = session_db()
+  try:
+    rs = session.query(VWUsuarioSistema).filter_by(usuario = usuario, id = sistema_id).count()
+    rpta = str(rs)
+    session.commit()
+  except Exception as e:
+    status = 500
+    session.rollback()
+    rpta = json.dumps({
+      'tipo_mensaje' : 'error',
+      'mensaje' : [
+        'Se ha producido un error en validar si el usuario tiene acceso a dicho sistema',
+        str(e)
+      ]
+    })
+  return HTTPResponse(status = status, body = rpta)

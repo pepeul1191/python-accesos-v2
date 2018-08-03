@@ -114,3 +114,10 @@ class VWModuloSubtituloItem(Base):
   subtitulo = Column(String)
   item = Column(String)
   url_item = Column(String)
+
+class VWUsuarioSistema(Base):
+  __tablename__ = 'vw_usuarios_sistemas'
+  id = Column(Integer, primary_key=True)
+  usuario_id = Column(Integer, primary_key=True)
+  usuario = Column(String)
+  nombre = Column(String)
