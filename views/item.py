@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from bottle import Bottle, request, HTTPResponse
-from config.models import Item
+from config.models import Item, VWModuloSubtituloItem
 from sqlalchemy.sql import select
 from config.middleware import enable_cors, headers, check_csrf
 from config.database import engine, session_db
@@ -87,4 +87,46 @@ def guardar():
         str(e)
       ]
     }
+  return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@item_view.route('/menu', method='GET')
+@enable_cors
+@headers
+@check_csrf
+def menu():
+  rpta = None
+  status = 200
+  sistema_id = request.query.sistema_id
+  modulo = request.query.modulo
+  try:
+    conn = engine.connect()
+    rs = session_db().query(VWModuloSubtituloItem).filter_by(sistema_id = sistema_id, modulo = modulo)
+    subtitulos = []
+    subtitulos_temp = []
+    items = []
+    for r in rs:
+      subtitulo = r.subtitulo
+      if (subtitulo  in subtitulos) == False:
+        subtitulos.append(subtitulo)
+        i = {'subtitulo': r.subtitulo, 'items': []}
+        items.append(i)
+      t = {'subtitulo': r.subtitulo, 'item': r.item, 'url': r.url_item}
+      subtitulos_temp.append(t)
+    for subtitulo in subtitulos:
+      for temp in subtitulos_temp:
+        if(temp['subtitulo'] == subtitulo):
+          i = {'item': temp['item'], 'url': temp['url']}
+          for item in items:
+            if subtitulo == item['subtitulo']:
+              item['items'].append(i)
+    rpta = items
+  except Exception as e:
+    rpta = {
+      'tipo_mensaje': 'error',
+      'mensaje': [
+        'Se ha producido un error en listar el menú de los items del módulo',
+        str(e)
+      ],
+    }
+    status = 500
   return HTTPResponse(status = status, body = json.dumps(rpta))

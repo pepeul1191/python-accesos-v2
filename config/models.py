@@ -102,3 +102,15 @@ class VWSistemaModulo(Base):
   modulo_id = Column(Integer, primary_key=True)
   nombre_modulo = Column(String)
   url = Column(String)
+
+class VWModuloSubtituloItem(Base):
+  __tablename__ = 'vw_modulos_subtitulos_items'
+  id = Column(Integer, primary_key=True)
+  sistema_id = Column(Integer)
+  modulo_id = Column(Integer)
+  modulo = Column(String)
+  url_modulo = Column(String)
+  subtitulo_id = Column(Integer)
+  subtitulo = Column(String)
+  item = Column(String)
+  url_item = Column(String)

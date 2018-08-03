@@ -110,7 +110,7 @@ def menu(sistema_id):
     rpta = {
       'tipo_mensaje': 'error',
       'mensaje': [
-        'Se ha producido un error en listar los modulos del sistema',
+        'Se ha producido un error en listar el menú de los modulos del sistema',
         str(e)
       ],
     }
