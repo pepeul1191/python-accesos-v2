@@ -482,3 +482,29 @@ def guardar():
       ]
     }
   return HTTPResponse(status = status, body = json.dumps(rpta))
+
+@usuario_view.route('/externo/validar', method='POST')
+@enable_cors
+@headers
+@check_csrf
+def externo_validar():
+  status = 200
+  usuario = request.forms.get('usuario')
+  contrasenia = request.forms.get('contrasenia')
+  rpta = None
+  session = session_db()
+  try:
+    rs = session.query(Usuario).filter_by(usuario = usuario, contrasenia = contrasenia).count()
+    rpta = str(rs)
+    session.commit()
+  except Exception as e:
+    status = 500
+    session.rollback()
+    rpta = json.dumps({
+      'tipo_mensaje' : 'error',
+      'mensaje' : [
+        'Se ha producido un error en validar el usuario externo',
+        str(e)
+      ]
+    })
+  return HTTPResponse(status = status, body = rpta)
